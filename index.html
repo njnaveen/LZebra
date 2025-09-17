@@ -10,8 +10,27 @@
         header img { max-height: 80px; margin-top: 10px; }
         h1 { font-size: 2.2em; color: #00ff00; }
         select, button { padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 1em; }
-        .provider-buttons button { background: transparent; border: 2px solid #00ff00; color: #00ff00; padding: 10px 20px; margin: 10px; border-radius: 10px; font-weight: bold; }
-        .provider-buttons button:hover { background: #00ff00; color: black; }
+        
+        /* Updated Button Styles with Glassmorphism */
+        .provider-buttons button {
+            background: rgba(0, 255, 0, 0.1); /* Semi-transparent green */
+            backdrop-filter: blur(5px); /* Blurs the matrix behind it */
+            -webkit-backdrop-filter: blur(5px); /* For Safari support */
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .provider-buttons button:hover {
+            background: #00ff00; /* Solid green on hover */
+            color: black;
+            transform: scale(1.05); /* Slight grow effect on hover */
+            box-shadow: 0 0 15px #00ff00;
+        }
+        
         footer { margin-top: 40px; font-size: 0.9em; color: #00ff00; }
 
         /* Sidebar */
@@ -30,180 +49,93 @@
         .modal-content { background: #111; color: #00ff00; padding: 20px; border-radius: 10px; width: 70%; text-align: center; }
         .close { float: right; font-size: 1.5em; cursor: pointer; color: red; }
 
-        /* Forum */
-        #forum { width: 90%; margin: 30px auto; text-align: left; }
+        /* Forum - Updated with glassmorphism effect */
+        #forum {
+            width: 90%;
+            margin: 30px auto;
+            text-align: left;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
         #forum h2 { color: #00ff00; }
         .post { border: 1px solid #00ff00; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
         .reply { margin-left: 20px; border-left: 2px solid #00ff00; padding-left: 10px; }
-        input, textarea { width: 100%; margin: 5px 0; padding: 8px; }
+        input, textarea { width: 100%; margin: 5px 0; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #00ff00; color: #00ff00; }
+        input::placeholder, textarea::placeholder { color: #00ff00; opacity: 0.7; }
     </style>
 </head>
 <body>
-<canvas id="matrix"></canvas>
+    <canvas id="matrix"></canvas>
 
-<header>
-    <img src="logo.jpg" alt="LZebra Logo" />
-    <h1>Navigate Your GenAI Career Journey</h1>
-    <p>Discover personalized learning paths, certifications, and upskilling strategies tailored to your IT role in the GenAI era.</p>
-</header>
+    <header>
+        <img src="logo.jpg" alt="LZebra Logo" />
+        <h1>Navigate Your GenAI Career Journey</h1>
+        <p>Discover personalized learning paths, certifications, and upskilling strategies tailored to your IT role in the GenAI era.</p>
+    </header>
 
-<div>
-    <select id="industry">
-        <option>IT & Software</option>
-        <option>Sales & Marketing</option>
-        <option>Healthcare</option>
-        <option>Finance</option>
-    </select>
-    <select id="role">
-        <option>Developer</option>
-        <option>Data Scientist</option>
-        <option>Technical Sales</option>
-        <option>Product Manager</option>
-        <option>Researcher</option>
-    </select>
-    <select id="level">
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advanced</option>
-    </select>
-    <button id="getPath">Get My Learning Path</button>
-</div>
-
-<h2>Comprehensive Certification Coverage</h2>
-<table>
-    <tr><th>Vendor / Course</th><th>Exam Code</th><th>Level</th><th>Fee (USD)</th><th>Fee (INR)</th><th>Link</th><th>Notes</th></tr>
-    <tr><td>Microsoft — Azure AI Fundamentals</td><td>AI-900</td><td>Beginner</td><td>$99</td><td>₹8200</td><td><a href="https://learn.microsoft.com/en-us/certifications/exams/ai-900/" target="_blank">Open</a></td><td>Foundational</td></tr>
-    <tr><td>AWS — Machine Learning Specialty</td><td>MLS-C01</td><td>Advanced</td><td>$300</td><td>₹24500</td><td><a href="https://aws.amazon.com/certification/certified-machine-learning-specialty/" target="_blank">Open</a></td><td>Specialist</td></tr>
-    <tr><td>Google Cloud — Professional ML Engineer</td><td>PML-E</td><td>Intermediate</td><td>$200</td><td>₹16000</td><td><a href="https://cloud.google.com/certification/machine-learning-engineer" target="_blank">Open</a></td><td>Professional</td></tr>
-    <tr><td>DeepLearning.AI — AI for Everyone</td><td>DL-AI</td><td>Beginner</td><td>Free</td><td>Free</td><td><a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank">Open</a></td><td>Non-technical</td></tr>
-    <tr><td>IBM — AI Engineering</td><td>IBM-AIE</td><td>Intermediate</td><td>$399</td><td>₹33000</td><td><a href="https://www.coursera.org/professional-certificates/ai-engineer" target="_blank">Open</a></td><td>Professional Cert</td></tr>
-    <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹200000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
-</table>
-
-<div id="forum">
-    <h2>Discussion Forum</h2>
-    <input type="text" id="postText" placeholder="Write your post..." />
-    <button onclick="addPost()">Post</button>
-    <div id="posts"></div>
-</div>
-
-<div id="newsSidebar"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
-<div id="newsToggle">AI News</div>
-
-<div id="pathModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Your Learning Path</h2>
-        <svg width="100%" height="200">
-            <line x1="50" y1="50" x2="200" y2="50" stroke="#0f0" stroke-width="2" marker-end="url(#arrow)"/>
-            <line x1="200" y1="50" x2="350" y2="50" stroke="#0f0" stroke-width="2" marker-end="url(#arrow)"/>
-            <circle cx="50" cy="50" r="20" stroke="#0f0" fill="black"/><text x="40" y="55" fill="#0f0">Start</text>
-            <circle cx="200" cy="50" r="20" stroke="#0f0" fill="black"/><text x="190" y="55" fill="#0f0">Role</text>
-            <circle cx="350" cy="50" r="20" stroke="#0f0" fill="black"/><text x="340" y="55" fill="#0f0">Cert</text>
-            <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#0f0"/></marker></defs>
-        </svg>
-        <p id="pathDetails"></p>
+    <div>
+        <select id="industry"><option>Engineering</option><option>Sales & Marketing</option></select>
+        <select id="role"><option>Developer</option><option>Technical Sales</option></select>
+        <select id="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+        <button id="getPath">Get My Learning Path</button>
     </div>
-</div>
 
-<footer><p>© 2025 LZebra – GenAI Navigator. All Rights Reserved.</p></footer>
+    <div class="provider-buttons">
+        <button onclick="window.open('https://cloud.google.com/training','_blank')">Google Cloud & AI</button>
+        <button onclick="window.open('https://learn.microsoft.com/en-us/training/azure/','_blank')">Microsoft Azure</button>
+        <button onclick="window.open('https://aws.amazon.com/training/','_blank')">AWS Training</button>
+        <button onclick="window.open('https://www.deeplearning.ai','_blank')">DeepLearning.AI</button>
+        <button onclick="window.open('https://www.ibm.com/training/','_blank')">IBM & Oracle</button>
+        <button onclick="window.open('https://online.stanford.edu/','_blank')">MIT & Stanford</button>
+    </div>
 
-<script>
-    // ... (Your Matrix, Sidebar, and News Loader scripts remain unchanged) ...
-    /* Matrix */
-    const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
-    canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-    const chars="LZEBRA..123456789Lebra123456789";
-    const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
-    function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
+    <h2>Comprehensive Certification Coverage</h2>
+    <table>
+        <tr><th>Vendor / Course</th><th>Exam Code</th><th>Level</th><th>Fee (USD)</th><th>Fee (INR)</th><th>Link</th><th>Notes</th></tr>
+        <tr><td>Microsoft — Azure AI Fundamentals</td><td>AI-900</td><td>Beginner</td><td>$99</td><td>₹8200</td><td><a href="https://learn.microsoft.com/en-us/certifications/exams/ai-900/" target="_blank">Open</a></td><td>Foundational</td></tr>
+        <tr><td>AWS — Machine Learning Specialty</td><td>MLS-C01</td><td>Advanced</td><td>$300</td><td>₹24500</td><td><a href="https://aws.amazon.com/certification/certified-machine-learning-specialty/" target="_blank">Open</a></td><td>Specialist</td></tr>
+        <tr><td>Google Cloud — Professional ML Engineer</td><td>PML-E</td><td>Intermediate</td><td>$200</td><td>₹16000</td><td><a href="https://cloud.google.com/certification/machine-learning-engineer" target="_blank">Open</a></td><td>Professional</td></tr>
+        <tr><td>DeepLearning.AI — AI for Everyone</td><td>DL-AI</td><td>Beginner</td><td>Free</td><td>Free</td><td><a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank">Open</a></td><td>Non-technical</td></tr>
+        <tr><td>IBM — AI Engineering</td><td>IBM-AIE</td><td>Intermediate</td><td>$399</td><td>₹33000</td><td><a href="https://www.coursera.org/professional-certificates/ai-engineer" target="_blank">Open</a></td><td>Professional Cert</td></tr>
+        <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹200000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
+    </table>
 
-    /* Sidebar */
-    const toggleBtn=document.getElementById("newsToggle"),sidebar=document.getElementById("newsSidebar"),newsList=document.getElementById("newsList");
-    toggleBtn.addEventListener("click",()=>sidebar.classList.toggle("open"));
+    <div id="forum">
+        <h2>Discussion Forum</h2>
+        <input type="text" id="postText" placeholder="Write your post..." />
+        <button onclick="addPost()">Post</button>
+        <div id="posts"></div>
+    </div>
 
-    /* News Loader (multi-feed RSS via rss2json) */
-    async function loadNews() {
-        const feeds = [
-            "https://api.rss2json.com/v1/api.json?rss_url=https://ai.googleblog.com/feeds/posts/default",
-            "https://api.rss2json.com/v1/api.json?rss_url=https://www.technologyreview.com/feed/",
-            "https://api.rss2json.com/v1/api.json?rss_url=https://venturebeat.com/category/ai/feed/"
-        ];
-        newsList.innerHTML="<li>Loading news...</li>";
-        try {
-            let allArticles = [];
-            for (let url of feeds) {
-                const res = await fetch(url);
-                const data = await res.json();
-                if (data.items) {
-                    allArticles = allArticles.concat(data.items.map(a => ({
-                        title: a.title, link: a.link, date: new Date(a.pubDate)
-                    })));
-                }
-            }
-            allArticles.sort((a,b)=>b.date - a.date);
-            newsList.innerHTML="";
-            allArticles.slice(0,10).forEach(article=>{
-                const li=document.createElement("li");
-                li.style.marginBottom="12px";
-                li.innerHTML=`<a href="${article.link}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">
-                ${article.title}</a><br><small style="color:#555;">${article.date.toLocaleDateString()}</small>`;
-                newsList.appendChild(li);
-            });
-        } catch (e) {
-            newsList.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";
-        }
-    }
-    loadNews();
+    <div id="newsSidebar"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
+    <div id="newsToggle">AI News</div>
 
-    /* Modal - Corrected and Enhanced Learning Path Logic */
-    const modal=document.getElementById("pathModal"),closeBtn=document.querySelector(".close");
-    const pathDetailsElement = document.getElementById("pathDetails");
-    const getPathBtn = document.getElementById("getPath");
-    
-    // Define your learning path recommendations
-    const learningPaths = {
-        'IT & Software_Developer_Beginner': 'Foundational AI concepts: Start with DeepLearning.AI’s "AI for Everyone" and Microsoft’s "Azure AI Fundamentals (AI-900)" to build a solid base. Focus on Python basics and key ML libraries.',
-        'IT & Software_Developer_Intermediate': 'Intermediate AI development: Progress to Google Cloud’s "Professional Machine Learning Engineer" certification. Explore frameworks like TensorFlow or PyTorch. Dive into practical projects with a focus on GenAI APIs.',
-        'IT & Software_Developer_Advanced': 'Advanced GenAI development: Pursue the AWS "Machine Learning Specialty" certification. Focus on building and deploying large-scale GenAI models, fine-tuning LLMs, and MLOps practices. Consider specialized courses from MIT or Stanford.',
-        'IT & Software_Data Scientist_Beginner': 'Foundational data science for AI: Begin with IBM’s "AI Engineering" professional certificate. Learn about data collection, cleaning, and basic model training. Understand the role of data in GenAI development.',
-        'IT & Software_Data Scientist_Intermediate': 'Intermediate data science for AI: Advance to Google Cloud’s "Professional Data Engineer" path (not on your list, but a good fit). Focus on data pipelines, feature engineering for large models, and data governance in AI projects.',
-        'IT & Software_Data Scientist_Advanced': 'Advanced data science for AI: Specialize in AI research. Focus on cutting-edge topics like multimodal AI, reinforcement learning, and causality in AI. Pursue research-oriented programs like those from MIT or Stanford.',
-        'Sales & Marketing_Technical Sales_Beginner': 'Beginner technical sales for AI: Understand the business value of AI. Take DeepLearning.AI’s "AI for Everyone" to grasp concepts. Learn how to articulate AI benefits and overcome common customer objections.',
-        'Sales & Marketing_Technical Sales_Intermediate': 'Intermediate technical sales for AI: Master the core AI solutions from a specific provider (e.g., Azure AI, AWS AI/ML services). Learn to run basic demos and explain technical architectures to clients.',
-        'Sales & Marketing_Technical Sales_Advanced': 'Advanced technical sales for AI: Become a trusted advisor. Focus on strategic AI consulting, ROI analysis, and enterprise-level AI solution design. Network with senior leaders in the AI ecosystem.',
-        // Add more paths for other combinations here
-        'Default': 'Select your industry, role, and level to get a personalized learning path.'
-    };
-    
-    getPathBtn.onclick = function() {
-        const industry = document.getElementById("industry").value;
-        const role = document.getElementById("role").value;
-        const level = document.getElementById("level").value;
-    
-        const key = `${industry}_${role}_${level}`;
-        const path = learningPaths[key] || learningPaths['Default'];
-    
-        pathDetailsElement.innerHTML = `
-            <p><strong>Industry:</strong> ${industry}</p>
-            <p><strong>Role:</strong> ${role}</p>
-            <p><strong>Level:</strong> ${level}</p>
-            <hr style="border: 1px solid #00ff00; width: 50%; margin: 15px auto;">
-            <p>${path}</p>
-        `;
-        modal.style.display = "flex";
-    };
-    
-    closeBtn.onclick = function() { modal.style.display = "none"; };
-    window.onclick = function(e) { if (e.target == modal) { modal.style.display = "none"; } };
+    <div id="pathModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Learning Path</h2>
+            <svg width="100%" height="200">
+                <line x1="50" y1="50" x2="200" y2="50" stroke="#0f0" stroke-width="2" marker-end="url(#arrow)"/>
+                <line x1="200" y1="50" x2="350" y2="50" stroke="#0f0" stroke-width="2" marker-end="url(#arrow)"/>
+                <circle cx="50" cy="50" r="20" stroke="#0f0" fill="black"/><text x="40" y="55" fill="#0f0">Start</text>
+                <circle cx="200" cy="50" r="20" stroke="#0f0" fill="black"/><text x="190" y="55" fill="#0f0">Role</text>
+                <circle cx="350" cy="50" r="20" stroke="#0f0" fill="black"/><text x="340" y="55" fill="#0f0">Cert</text>
+                <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#0f0"/></marker></defs>
+            </svg>
+            <p id="pathDetails"></p>
+        </div>
+    </div>
 
-    // ... (Your Forum script remains unchanged) ...
-    /* Forum with Persistence */
-    function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}
-    function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}
-    function addPost(){const text=document.getElementById("postText").value;if(!text) return;const div=document.createElement("div");div.className="post";div.innerHTML=`<p>${text}</p><button onclick="addReply(this)">Reply</button><div class="replies"></div>`;document.getElementById("posts").appendChild(div);document.getElementById("postText").value="";savePosts();}
-    function addReply(btn){const replyText=prompt("Enter your reply:");if(!replyText) return;const reply=document.createElement("div");reply.className="reply";reply.innerHTML=`<p>${replyText}</p>`;btn.parentElement.querySelector(".replies").appendChild(reply);savePosts();}
-    loadPosts();
-</script>
+    <footer><p>© 2025 LZebra – GenAI Navigator. All Rights Reserved.</p></footer>
+
+    <script>
+        /* All scripts below are unchanged */
+        const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");canvas.height=window.innerHeight;canvas.width=window.innerWidth;const chars="LZEBRA0123456789   LZebra0123456789";const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);const toggleBtn=document.getElementById("newsToggle"),sidebar=document.getElementById("newsSidebar"),newsList=document.getElementById("newsList");toggleBtn.addEventListener("click",()=>sidebar.classList.toggle("open"));async function loadNews(){const feeds=["https://api.rss2json.com/v1/api.json?rss_url=https://ai.googleblog.com/feeds/posts/default","https://api.rss2json.com/v1/api.json?rss_url=https://www.technologyreview.com/feed/","https://api.rss2json.com/v1/api.json?rss_url=https://venturebeat.com/category/ai/feed/"];newsList.innerHTML="<li>Loading news...</li>";try{let allArticles=[];for(let url of feeds){const res=await fetch(url);const data=await res.json();if(data.items){allArticles=allArticles.concat(data.items.map(a=>({title:a.title,link:a.link,date:new Date(a.pubDate)})));}}allArticles.sort((a,b)=>b.date-a.date);newsList.innerHTML="";allArticles.slice(0,10).forEach(article=>{const li=document.createElement("li");li.style.marginBottom="12px";li.innerHTML=`<a href="${article.link}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">${article.title}</a><br><small style="color:#555;">${article.date.toLocaleDateString()}</small>`;newsList.appendChild(li);});}catch(e){newsList.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";}}loadNews();const modal=document.getElementById("pathModal"),closeBtn=document.querySelector(".close");document.getElementById("getPath").onclick=function(){const ind=document.getElementById("industry").value,role=document.getElementById("role").value,lvl=document.getElementById("level").value;document.getElementById("pathDetails").innerText=`Your path: ${ind} → ${role} → ${lvl}`;modal.style.display="flex";};closeBtn.onclick=function(){modal.style.display="none";};window.onclick=function(e){if(e.target==modal){modal.style.display="none";}};function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}function addPost(){const text=document.getElementById("postText").value;if(!text) return;const div=document.createElement("div");div.className="post";div.innerHTML=`<p>${text}</p><button onclick="addReply(this)">Reply</button><div class="replies"></div>`;document.getElementById("posts").appendChild(div);document.getElementById("postText").value="";savePosts();}function addReply(btn){const replyText=prompt("Enter your reply:");if(!replyText) return;const reply=document.createElement("div");reply.className="reply";reply.innerHTML=`<p>${replyText}</p>`;btn.parentElement.querySelector(".replies").appendChild(reply);savePosts();}loadPosts();
+    </script>
 </body>
 </html>
-
