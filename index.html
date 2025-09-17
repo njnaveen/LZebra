@@ -36,13 +36,12 @@
         .sidebar {
             position: fixed;
             top: 0;
-            right: -400px;
-            width: 350px;
+            right: -100%; /* Initially hide the sidebar completely */
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             color: #00ff00;
             box-shadow: -2px 0 10px rgba(0, 0, 0, 0.6);
-            transition: right 0.4s ease;
+            transition: right 0.4s ease, width 0.4s ease; /* Add transition for width */
             padding: 20px;
             z-index: 2000;
             overflow-y: auto;
@@ -56,8 +55,7 @@
         .toggle-button {
             position: fixed;
             right: 0;
-            width: 30px; /* Small width */
-            padding: 12px 18px;
+            padding: 12px; /* Uniform padding */
             background: rgba(0, 255, 0, 0.2);
             color: #00ff00;
             border-radius: 5px 0 0 5px;
@@ -65,16 +63,18 @@
             z-index: 2001;
             font-weight: bold;
             transition: all 0.3s ease;
-            writing-mode: vertical-rl; /* Vertical text */
-            text-orientation: upright;
+            writing-mode: vertical-rl;
+            text-orientation: sideways; /* Use sideways for better readability on vertical text */
             border: 1px solid #00ff00;
             transform: translateY(-50%);
+            white-space: nowrap; /* Prevent text from wrapping */
         }
         .toggle-button:hover {
             background: #00ff00;
             color: black;
-            width: 40px; /* Bigger size on hover */
+            padding-left: 20px;
             box-shadow: 0 0 15px #00ff00;
+            transform: translateY(-50%) translateX(-5px); /* Add a slight shift for a "pop" effect */
         }
 
         #newsToggle { top: 30%; }
@@ -185,7 +185,7 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789   LZEBRA   0123456789";
+        const chars="アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプ";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
@@ -195,20 +195,26 @@
         const forumSidebar = document.getElementById("forumSidebar");
         const forumToggle = document.getElementById("forumToggle");
 
-        // Function to close all sidebars
-        function closeAllSidebars() {
-            newsSidebar.classList.remove("open");
-            forumSidebar.classList.remove("open");
+        function openSidebar(sidebar, width) {
+            newsSidebar.style.width = "0%";
+            forumSidebar.style.width = "0%";
+            sidebar.style.width = width;
         }
 
         newsToggle.addEventListener("click", () => {
-            closeAllSidebars();
-            newsSidebar.classList.add("open");
+            if (newsSidebar.style.width === "70%") {
+                openSidebar(newsSidebar, "0%");
+            } else {
+                openSidebar(newsSidebar, "70%");
+            }
         });
 
         forumToggle.addEventListener("click", () => {
-            closeAllSidebars();
-            forumSidebar.classList.add("open");
+            if (forumSidebar.style.width === "70%") {
+                openSidebar(forumSidebar, "0%");
+            } else {
+                openSidebar(forumSidebar, "70%");
+            }
         });
 
         /* News Loader (multi-feed RSS via rss2json) */
