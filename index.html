@@ -4,6 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LZebra – GenAI Navigator</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N2NNEBEJZM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-N2NNEBEJZM');
+    </script>
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: black; color: #00ff00; text-align: center; overflow-x: hidden; }
         canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
@@ -230,7 +238,7 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789 LZebra  ";
+        const chars="アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプ";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
@@ -263,7 +271,7 @@
             }
         });
 
-        // New Logic: Close sidebar on click outside
+        // Close sidebar on click outside
         document.addEventListener("click", (event) => {
             const isClickInsideNews = newsSidebar.contains(event.target) || newsToggle.contains(event.target);
             const isClickInsideForum = forumSidebar.contains(event.target) || forumToggle.contains(event.target);
