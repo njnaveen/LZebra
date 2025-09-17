@@ -26,6 +26,20 @@
   footer{padding:22px 18px;text-align:center;color:#e5e7eb;font-size:13px;margin-top:32px;position:relative;z-index:1}
   .reply-btn{font-size:12px;color:#2b8cff;background:none;border:none;cursor:pointer;margin-left:8px}
   .reply-box{margin-top:6px}
+
+  /* Sidebar */
+  #newsSidebar {
+    position:fixed; top:0; right:-340px; width:320px; height:100%;
+    background:#fff; border-left:1px solid #ddd;
+    padding:16px; overflow-y:auto; z-index:3;
+    transition:right 0.4s ease;
+  }
+  #newsSidebar.open { right:0; }
+  #newsToggle {
+    position:fixed; top:100px; right:0; z-index:4;
+    background:#2b8cff; color:#fff; padding:8px 12px;
+    border-radius:8px 0 0 8px; cursor:pointer; font-weight:600;
+  }
 </style>
 </head>
 <body>
@@ -92,7 +106,7 @@
     <h2 style="margin-top:24px">Send your Query</h2>
     <a href="#" id="emailLink">Send your Query</a>
     <div id="emailForm" style="margin-top:12px;display:none">
-      <p style="font-size:14px;color:#6b7280">Your query will be sent to: <strong>naveen.jaiswal@icloud.com</strong></p>
+      <p style="font-size:14px;color:#6b7280">Your query will be sent to: <strong>naveenjaiswal@gmail.com</strong></p>
       <textarea id="emailBody" rows="3" style="width:100%;padding:10px;border:1px solid #dbe6f7;border-radius:8px" placeholder="Write your email..."></textarea>
       <button class="btn" style="margin-top:8px" id="sendEmailBtn">Send</button>
     </div>
@@ -103,166 +117,81 @@
   © 2025 LZebra — GenAI Navigator. All Rights Reserved.
 </footer>
 
+<!-- Sidebar Button + Sidebar -->
+<div id="newsToggle">AI News</div>
+<aside id="newsSidebar">
+  <h3 style="margin-top:0; font-size:18px; color:#0f172a;">AI & Tech News</h3>
+  <ul id="newsList" style="list-style:none; padding:0; margin:0; font-size:14px; line-height:1.4;"></ul>
+</aside>
+
 <script>
-// ---------------- Matrix Background ----------------
+// ========== MATRIX BACKGROUND ==========
 const canvas=document.getElementById('matrix');
 const ctx=canvas.getContext('2d');
-canvas.height=window.innerHeight;
-canvas.width=window.innerWidth;
-const letters="LZebraaaaLZEBRAaaa01234566789LZebra0123456789LZebra";
-const fontSize=14;
-const columns=canvas.width/fontSize;
-const drops=[];
+canvas.height=window.innerHeight;canvas.width=window.innerWidth;
+const letters="アァカサタナハABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+const fontSize=14;const columns=canvas.width/fontSize;const drops=[];
 for(let x=0;x<columns;x++) drops[x]=1;
-function draw(){
-  ctx.fillStyle="rgba(0,0,0,0.05)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="#0F0";
-  ctx.font=fontSize+"px monospace";
-  for(let i=0;i<drops.length;i++){
-    const text=letters.charAt(Math.floor(Math.random()*letters.length));
-    ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-    if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0;
-    drops[i]++;
-  }
-}
+function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#0F0";ctx.font=fontSize+"px monospace";
+for(let i=0;i<drops.length;i++){const text=letters.charAt(Math.floor(Math.random()*letters.length));
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0;drops[i]++;}}
 setInterval(draw,33);
-window.addEventListener('resize',()=>{canvas.height=window.innerHeight;canvas.width=window.innerWidth;});
 
-// ---------------- Certification Data ----------------
-const certifications = [
-  {vendor:"Microsoft",name:"Azure AI Fundamentals",code:"AI-900",level:"Beginner",fee_usd:"$99",fee_inr:"₹3696",link:"https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/",notes:"Free Microsoft Learn modules available"},
-  {vendor:"AWS",name:"AWS Certified AI Practitioner",code:"AIF-C01",level:"Foundational",fee_usd:"$100",fee_inr:"₹8400",link:"https://aws.amazon.com/certification/certified-ai-practitioner/",notes:"AWS free digital training included"},
-  {vendor:"Google Cloud",name:"Professional Machine Learning Engineer",code:"PML-E",level:"Intermediate",fee_usd:"$200",fee_inr:"₹16500",link:"https://cloud.google.com/learn/certification/machine-learning-engineer",notes:"Advanced ML role-based exam"},
-  {vendor:"DeepLearning.AI / Coursera",name:"Generative AI Specialization",code:"N/A",level:"Beginner → Intermediate",fee_usd:"≈$39/month",fee_inr:"≈₹3200/month",link:"https://www.coursera.org/specializations/generative-ai",notes:"Can audit free; cert requires subscription"},
-  {vendor:"IBM / Coursera",name:"AI Engineering Professional Certificate",code:"N/A",level:"Intermediate",fee_usd:"≈$39/month",fee_inr:"≈₹3200/month",link:"https://www.ibm.com/training",notes:"Includes ML, DL, AI projects"},
-  {vendor:"Google AI",name:"AI Fundamentals (Learn AI Skills)",code:"N/A",level:"Beginner",fee_usd:"Free",fee_inr:"Free",link:"https://ai.google/education/",notes:"Free courses and tutorials"},
-  {vendor:"Coursera",name:"AI For Everyone (Andrew Ng)",code:"N/A",level:"Beginner",fee_usd:"Free audit / $49 cert",fee_inr:"Free audit / ₹4000 cert",link:"https://www.coursera.org/learn/ai-for-everyone",notes:"Non-technical overview"},
-  {vendor:"MIT xPro",name:"Professional Certificate in AI",code:"N/A",level:"Intermediate",fee_usd:"≈$2500+",fee_inr:"≈₹200,000+",link:"https://xpro.mit.edu",notes:"Professional level program"}
-];
-function render(certs){
-  const tbody = document.getElementById('tbody');
-  tbody.innerHTML = '';
-  for(const c of certs){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${c.vendor} — ${c.name}</td>
-      <td>${c.code}</td>
-      <td>${c.level}</td>
-      <td>${c.fee_usd}</td>
-      <td>${c.fee_inr}</td>
-      <td><a href="${c.link}" target="_blank">Open</a></td>
-      <td>${c.notes}</td>`;
-    tbody.appendChild(tr);
-  }
-}
-window.onload = () => { render(certifications); };
+// ========== CERTIFICATION DATA ==========
+const certifications=[{vendor:"Microsoft",name:"Azure AI Fundamentals",code:"AI-900",level:"Beginner",fee_usd:"$99",fee_inr:"₹3696",link:"https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/",notes:"Free Microsoft Learn modules available"},
+{vendor:"AWS",name:"AWS Certified AI Practitioner",code:"AIF-C01",level:"Foundational",fee_usd:"$100",fee_inr:"₹8400",link:"https://aws.amazon.com/certification/certified-ai-practitioner/",notes:"AWS free digital training included"},
+{vendor:"Google Cloud",name:"Professional Machine Learning Engineer",code:"PML-E",level:"Intermediate",fee_usd:"$200",fee_inr:"₹16500",link:"https://cloud.google.com/learn/certification/machine-learning-engineer",notes:"Advanced ML role-based exam"}];
+function render(certs){const tbody=document.getElementById('tbody');tbody.innerHTML='';for(const c of certs){const tr=document.createElement('tr');
+tr.innerHTML=`<td>${c.vendor} — ${c.name}</td><td>${c.code}</td><td>${c.level}</td><td>${c.fee_usd}</td><td>${c.fee_inr}</td><td><a href="${c.link}" target="_blank">Open</a></td><td>${c.notes}</td>`;tbody.appendChild(tr);}}
+window.onload=()=>{render(certifications);};
 
-// ---------------- Flowchart ----------------
-document.getElementById('getPath').addEventListener('click',()=>{
-  const industry = document.querySelectorAll('.controls select')[0].value;
-  const role = document.querySelectorAll('.controls select')[1].value;
-  const level = document.querySelectorAll('.controls select')[2].value;
-  
-  const svg = document.getElementById('flowSVG');
-  svg.innerHTML='';
-  const boxWidth=200, boxHeight=50, startX=50, startY=50, gapX=220, gapY=80;
+// ========== FLOWCHART ==========
+document.getElementById('getPath').addEventListener('click',()=>{const industry=document.querySelectorAll('.controls select')[0].value;
+const role=document.querySelectorAll('.controls select')[1].value;const level=document.querySelectorAll('.controls select')[2].value;
+const svg=document.getElementById('flowSVG');svg.innerHTML='';const boxWidth=200,boxHeight=50,startX=50,startY=50,gapX=220,gapY=80;
+function getColor(level){if(level.includes("Beginner"))return"#16a34a";if(level.includes("Intermediate"))return"#f97316";if(level.includes("Executive"))return"#dc2626";return"#2b8cff";}
+function drawBox(text,x,y,color){const rect=document.createElementNS("http://www.w3.org/2000/svg","rect");rect.setAttribute("x",x);rect.setAttribute("y",y);
+rect.setAttribute("width",boxWidth);rect.setAttribute("height",boxHeight);rect.setAttribute("rx",10);rect.setAttribute("fill",color);
+rect.setAttribute("stroke","#0f172a");rect.setAttribute("stroke-width",2);svg.appendChild(rect);
+const label=document.createElementNS("http://www.w3.org/2000/svg","text");label.setAttribute("x",x+boxWidth/2);
+label.setAttribute("y",y+boxHeight/2+5);label.setAttribute("fill","white");label.setAttribute("text-anchor","middle");
+label.setAttribute("font-size","14");label.textContent=text;svg.appendChild(label);return{x,y};}
+function drawArrow(fromX,fromY,toX,toY){const line=document.createElementNS("http://www.w3.org/2000/svg","line");line.setAttribute("x1",fromX);
+line.setAttribute("y1",fromY);line.setAttribute("x2",toX);line.setAttribute("y2",toY);line.setAttribute("stroke","#333");line.setAttribute("stroke-width",2);svg.appendChild(line);}
+drawBox("Start",startX,startY,"#2b8cff");drawBox(industry,startX+gapX,startY,"#2b8cff");drawArrow(startX+200,startY+25,startX+gapX,startY+25);
+drawBox(role,startX+gapX*2,startY,"#2b8cff");drawArrow(startX+gapX+200,startY+25,startX+gapX*2,startY+25);
+drawBox(level,startX+gapX*3,startY,getColor(level));drawArrow(startX+gapX*2+200,startY+25,startX+gapX*3,startY+25);
+let certs=certifications.filter(c=>c.level.includes(level)||c.level.includes("Beginner"));certs=certs.slice(0,3);
+certs.forEach((c,i)=>{const y=startY+gapY+(i*(boxHeight+gapY/2));const x=startX+gapX*3;
+drawBox(c.code+" ("+c.vendor+")",x,y,getColor(c.level));drawArrow(x+boxWidth/2,startY+50,x+boxWidth/2,y);});
+document.getElementById('flowchart').style.display='block';});
 
-  function getColor(level){
-    if(level.includes("Beginner")) return "#16a34a"; // green
-    if(level.includes("Intermediate")) return "#f97316"; // orange
-    if(level.includes("Executive")) return "#dc2626"; // red
-    return "#2b8cff";
-  }
+// ========== FORUM ==========
+const forumInput=document.getElementById('forumInput');const postBtn=document.getElementById('postBtn');const clearBtn=document.getElementById('clearBtn');const forumPosts=document.getElementById('forumPosts');
+function savePosts(){localStorage.setItem('forumPosts',forumPosts.innerHTML);}function loadPosts(){const saved=localStorage.getItem('forumPosts');if(saved){forumPosts.innerHTML=saved;}}
+postBtn.addEventListener('click',()=>{const txt=forumInput.value.trim();if(!txt)return;const li=document.createElement('li');li.style.borderBottom="1px solid #e5e7eb";li.style.padding="8px 0";
+li.innerHTML=`<div>${txt}</div>`;forumPosts.prepend(li);forumInput.value='';savePosts();});
+clearBtn.addEventListener('click',()=>{if(confirm("Clear all forum posts?")){forumPosts.innerHTML='';localStorage.removeItem('forumPosts');}});loadPosts();
 
-  function drawBox(text,x,y,color){
-    const rect=document.createElementNS("http://www.w3.org/2000/svg","rect");
-    rect.setAttribute("x",x);rect.setAttribute("y",y);
-    rect.setAttribute("width",boxWidth);rect.setAttribute("height",boxHeight);
-    rect.setAttribute("rx",10);
-    rect.setAttribute("fill",color);rect.setAttribute("stroke","#0f172a");
-    rect.setAttribute("stroke-width",2);
-    svg.appendChild(rect);
-
-    const label=document.createElementNS("http://www.w3.org/2000/svg","text");
-    label.setAttribute("x",x+boxWidth/2);
-    label.setAttribute("y",y+boxHeight/2+5);
-    label.setAttribute("fill","white");
-    label.setAttribute("text-anchor","middle");
-    label.setAttribute("font-size","14");
-    label.textContent=text;
-    svg.appendChild(label);
-    return {x,y};
-  }
-  function drawArrow(fromX,fromY,toX,toY){
-    const line=document.createElementNS("http://www.w3.org/2000/svg","line");
-    line.setAttribute("x1",fromX);line.setAttribute("y1",fromY);
-    line.setAttribute("x2",toX);line.setAttribute("y2",toY);
-    line.setAttribute("stroke","#333");line.setAttribute("stroke-width",2);
-    svg.appendChild(line);
-  }
-
-  const start=drawBox("Start",startX,startY,"#2b8cff");
-  const industryBox=drawBox(industry,startX+gapX,startY,"#2b8cff");
-  drawArrow(startX+boxWidth,startY+boxHeight/2,startX+gapX,startY+boxHeight/2);
-
-  const roleBox=drawBox(role,startX+gapX*2,startY,"#2b8cff");
-  drawArrow(startX+gapX+boxWidth,startY+boxHeight/2,startX+gapX*2,startY+boxHeight/2);
-
-  const levelBox=drawBox(level,startX+gapX*3,startY,getColor(level));
-  drawArrow(startX+gapX*2+boxWidth,startY+boxHeight/2,startX+gapX*3,startY+boxHeight/2);
-
-  let certs=certifications.filter(c=>c.level.includes(level) || c.level.includes("Beginner"));
-  certs=certs.slice(0,3);
-  certs.forEach((c,i)=>{
-    const y=startY+gapY+(i*(boxHeight+gapY/2));
-    const x=startX+gapX*3;
-    drawBox(c.code+" ("+c.vendor+")",x,y,getColor(c.level));
-    drawArrow(x+boxWidth/2,startY+boxHeight,x+boxWidth/2,y);
-  });
-
-  document.getElementById('flowchart').style.display='block';
-});
-
-// ---------------- Forum Persistence ----------------
-const forumInput=document.getElementById('forumInput');
-const postBtn=document.getElementById('postBtn');
-const clearBtn=document.getElementById('clearBtn');
-const forumPosts=document.getElementById('forumPosts');
-function savePosts(){localStorage.setItem('forumPosts',forumPosts.innerHTML);}
-function loadPosts(){const saved=localStorage.getItem('forumPosts');if(saved){forumPosts.innerHTML=saved;attachReplyEvents();}}
-function attachReplyEvents(){
-  forumPosts.querySelectorAll('.reply-btn').forEach(btn=>{
-    btn.onclick=()=>{const box=btn.nextElementSibling;box.style.display=box.style.display==='none'?'block':'none';};
-  });
-  forumPosts.querySelectorAll('.reply-box .btn').forEach(btn=>{
-    btn.onclick=()=>{const textarea=btn.parentElement.querySelector('textarea');const replies=btn.parentElement.parentElement.querySelector('.replies');if(textarea.value.trim()){const li=document.createElement('li');li.textContent=textarea.value.trim();li.style.padding="6px 0";replies.appendChild(li);textarea.value='';btn.parentElement.style.display='none';savePosts();}};});
-}
-postBtn.addEventListener('click',()=>{
-  const txt=forumInput.value.trim();
-  if(!txt)return;
-  const li=document.createElement('li');
-  li.style.borderBottom="1px solid #e5e7eb";
-  li.style.padding="8px 0";
-  li.innerHTML = `<div>${txt}</div><button class="reply-btn">Reply</button><div class="reply-box" style="display:none"><textarea rows="2" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px" placeholder="Write reply..."></textarea><button class="btn" style="margin-top:6px">Post Reply</button></div><ul class="replies" style="list-style:none;padding-left:18px;margin-top:6px"></ul>`;
-  forumPosts.prepend(li);
-  forumInput.value='';
-  attachReplyEvents();
-  savePosts();
-});
-clearBtn.addEventListener('click',()=>{
-  if(confirm("Clear all forum posts?")){
-    forumPosts.innerHTML='';
-    localStorage.removeItem('forumPosts');
-  }
-});
-loadPosts();
-
-// ---------------- Email Query ----------------
-const emailLink=document.getElementById('emailLink');
-const emailForm=document.getElementById('emailForm');
-const sendEmailBtn=document.getElementById('sendEmailBtn');
+// ========== EMAIL ==========
+const emailLink=document.getElementById('emailLink');const emailForm=document.getElementById('emailForm');const sendEmailBtn=document.getElementById('sendEmailBtn');
 emailLink.addEventListener('click',(e)=>{e.preventDefault();emailForm.style.display=emailForm.style.display==='none'?'block':'none';});
-sendEmailBtn.addEventListener('click',()=>{const body=document.getElementById('emailBody').value;if(!body.trim()){alert('Please write something before sending.');return;}const mailto=`mailto:naveenjaiswal@gmail.com?subject=AI%20Certification%20Query&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
+sendEmailBtn.addEventListener('click',()=>{const body=document.getElementById('emailBody').value;if(!body.trim()){alert('Please write something before sending.');return;}
+const mailto=`mailto:naveenjaiswal@gmail.com?subject=AI%20Certification%20Query&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
+
+// ========== AI NEWS SIDEBAR ==========
+const toggleBtn=document.getElementById('newsToggle');const sidebar=document.getElementById('newsSidebar');
+toggleBtn.addEventListener('click',()=>{sidebar.classList.toggle('open');});
+async function loadNews(){const apiKey="102fe252929e498f87ad1ac2781f902e"; // Replace with your NewsAPI.org key
+const url=`https://newsapi.org/v2/everything?q=artificial+intelligence&sortBy=publishedAt&language=en&pageSize=8&apiKey=${apiKey}`;
+const list=document.getElementById("newsList");list.innerHTML="<li>Loading news...</li>";
+try{const res=await fetch(url);const data=await res.json();list.innerHTML="";
+data.articles.forEach(article=>{const li=document.createElement("li");li.style.marginBottom="12px";
+li.innerHTML=`<a href="${article.url}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">${article.title}</a><br><small style="color:#555;">${new Date(article.publishedAt).toLocaleDateString()}</small>`;
+list.appendChild(li);});}catch(e){list.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";}}
+loadNews();
 </script>
 </body>
 </html>
