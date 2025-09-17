@@ -11,11 +11,10 @@
         h1 { font-size: 2.2em; color: #00ff00; }
         select, button { padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 1em; }
 
-        /* Updated Button Styles with Glassmorphism */
-        .provider-buttons button {
-            background: rgba(0, 255, 0, 0.1); /* Semi-transparent green */
-            backdrop-filter: blur(5px); /* Blurs the matrix behind it */
-            -webkit-backdrop-filter: blur(5px); /* For Safari support */
+        .provider-buttons button, .nav-button {
+            background: rgba(0, 255, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border: 2px solid #00ff00;
             color: #00ff00;
             padding: 10px 20px;
@@ -24,15 +23,15 @@
             font-weight: bold;
             transition: all 0.3s ease;
         }
-        .provider-buttons button:hover {
-            background: #00ff00; /* Solid green on hover */
+        .provider-buttons button:hover, .nav-button:hover {
+            background: #00ff00;
             color: black;
-            transform: scale(1.05); /* Slight grow effect on hover */
+            transform: scale(1.05);
             box-shadow: 0 0 15px #00ff00;
         }
 
         footer { margin-top: 40px; font-size: 0.9em; color: #00ff00; }
-
+        
         /* Sidebar */
         #newsSidebar { position: fixed; top: 0; right: -400px; width: 350px; height: 100%; background: white; color: black; box-shadow: -2px 0 10px rgba(0,0,0,0.6); transition: right 0.4s ease; padding: 20px; z-index: 2000; overflow-y: auto; }
         #newsSidebar.open { right: 0; }
@@ -48,25 +47,6 @@
         .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
         .modal-content { background: #111; color: #00ff00; padding: 20px; border-radius: 10px; width: 70%; text-align: center; }
         .close { float: right; font-size: 1.5em; cursor: pointer; color: red; }
-
-        /* Forum - Updated with glassmorphism effect */
-        #forum {
-            width: 90%;
-            margin: 30px auto;
-            text-align: left;
-            padding: 20px;
-            background: rgba(0, 255, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-        #forum h2 { color: #00ff00; }
-        .post { border: 1px solid #00ff00; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .reply { margin-left: 20px; border-left: 2px solid #00ff00; padding-left: 10px; }
-        input, textarea { width: 100%; margin: 5px 0; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #00ff00; color: #00ff00; }
-        input::placeholder, textarea::placeholder { color: #00ff00; opacity: 0.7; }
     </style>
 </head>
 <body>
@@ -77,6 +57,8 @@
         <h1>Navigate Your GenAI Career Journey</h1>
         <p>Discover personalized learning paths, certifications, and upskilling strategies tailored to your IT role in the GenAI era.</p>
     </header>
+    
+    <button class="nav-button" onclick="window.location.href='forum.html'">Discussion Forum</button>
 
     <div>
         <select id="industry">
@@ -117,15 +99,8 @@
         <tr><td>Google Cloud — Professional ML Engineer</td><td>PML-E</td><td>Intermediate</td><td>$200</td><td>₹16000</td><td><a href="https://cloud.google.com/certification/machine-learning-engineer" target="_blank">Open</a></td><td>Professional</td></tr>
         <tr><td>DeepLearning.AI — AI for Everyone</td><td>DL-AI</td><td>Beginner</td><td>Free</td><td>Free</td><td><a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank">Open</a></td><td>Non-technical</td></tr>
         <tr><td>IBM — AI Engineering</td><td>IBM-AIE</td><td>Intermediate</td><td>$399</td><td>₹33000</td><td><a href="https://www.coursera.org/professional-certificates/ai-engineer" target="_blank">Open</a></td><td>Professional Cert</td></tr>
-        <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹200000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
+        <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹2000000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
     </table>
-
-    <div id="forum">
-        <h2>Discussion Forum</h2>
-        <input type="text" id="postText" placeholder="Write your post..." />
-        <button onclick="addPost()">Post</button>
-        <div id="posts"></div>
-    </div>
 
     <div id="newsSidebar"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
     <div id="newsToggle">AI News</div>
@@ -199,7 +174,6 @@
         const pathDetailsElement = document.getElementById("pathDetails");
         const getPathBtn = document.getElementById("getPath");
 
-        // Define your learning path recommendations
         const learningPaths = {
             'IT & Software_Developer_Beginner': 'Foundational AI concepts: Start with DeepLearning.AI’s "AI for Everyone" and Microsoft’s "Azure AI Fundamentals (AI-900)" to build a solid base. Focus on Python basics and key ML libraries.',
             'IT & Software_Developer_Intermediate': 'Intermediate AI development: Progress to Google Cloud’s "Professional Machine Learning Engineer" certification. Explore frameworks like TensorFlow or PyTorch. Dive into practical projects with a focus on GenAI APIs.',
@@ -233,13 +207,6 @@
 
         closeBtn.onclick = function() { modal.style.display = "none"; };
         window.onclick = function(e) { if (e.target == modal) { modal.style.display = "none"; } };
-
-        /* Forum with Persistence */
-        function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}
-        function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}
-        function addPost(){const text=document.getElementById("postText").value;if(!text) return;const div=document.createElement("div");div.className="post";div.innerHTML=`<p>${text}</p><button onclick="addReply(this)">Reply</button><div class="replies"></div>`;document.getElementById("posts").appendChild(div);document.getElementById("postText").value="";savePosts();}
-        function addReply(btn){const replyText=prompt("Enter your reply:");if(!replyText) return;const reply=document.createElement("div");reply.className="reply";reply.innerHTML=`<p>${replyText}</p>`;btn.parentElement.querySelector(".replies").appendChild(reply);savePosts();}
-        loadPosts();
     </script>
 </body>
 </html>
