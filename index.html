@@ -111,34 +111,6 @@
         table { width: 95%; margin: 20px auto; border-collapse: collapse; background: #111; color: #00ff00; }
         table th, table td { border: 1px solid #00ff00; padding: 10px; text-align: center; }
         table th { background: #222; }
-
-        /* Contact Form Styles */
-        #contact-form-container {
-            width: 80%;
-            margin: 40px auto;
-            text-align: left;
-            padding: 20px;
-            background: rgba(0, 255, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 0, 0.3);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-        #contact-form-container h2 {
-            text-align: center;
-            color: #00ff00;
-        }
-        #contact-form-container input[type="text"],
-        #contact-form-container input[type="email"],
-        #contact-form-container textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid #00ff00;
-            color: #00ff00;
-        }
     </style>
 </head>
 <body>
@@ -192,16 +164,6 @@
         <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹2000000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
     </table>
 
-    <div id="contact-form-container">
-        <h2>Connect With Us</h2>
-        <p>Enter your details and a message below to get in touch. We'll reply directly to your email!</p>
-        <form id="contact-form" action="https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT" method="POST">
-            <input type="email" name="email" placeholder="Your Email" required>
-            <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-            <button type="submit" class="form-button">Submit</button>
-        </form>
-    </div>
-
     <div id="newsSidebar" class="sidebar small"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
     <div id="newsToggle" class="toggle-button">AI News</div>
 
@@ -238,7 +200,7 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789   LZEBRA    0123456789 LZebra";
+        const chars="アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂツヅテデトドナニヌネノハバパヒビピフブプ";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
@@ -268,6 +230,16 @@
             } else {
                 closeAllSidebars();
                 forumSidebar.classList.add("open");
+            }
+        });
+
+        // New Logic: Close sidebar on click outside
+        document.addEventListener("click", (event) => {
+            const isClickInsideNews = newsSidebar.contains(event.target) || newsToggle.contains(event.target);
+            const isClickInsideForum = forumSidebar.contains(event.target) || forumToggle.contains(event.target);
+
+            if (!isClickInsideNews && !isClickInsideForum) {
+                closeAllSidebars();
             }
         });
 
