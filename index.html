@@ -51,7 +51,9 @@
     <p class="lead">Discover personalized learning paths, certifications, and upskilling strategies tailored to your IT role in the GenAI era.</p>
   </div>
 </header>
+
 <main class="container">
+  <!-- Career Path Controls -->
   <section class="controls">
     <label>Industry Function <select><option>Sales & Marketing</option><option>Engineering</option></select></label>
     <label>Specific Role <select><option>Technical Sales</option><option>Developer</option></select></label>
@@ -74,6 +76,7 @@
     </div>
   </section>
 
+  <!-- Certification Table -->
   <section class="card">
     <h2>Comprehensive Certification Coverage</h2>
     <input class="search" id="q" placeholder="Search by vendor, exam code, or name">
@@ -181,16 +184,48 @@ emailLink.addEventListener('click',(e)=>{e.preventDefault();emailForm.style.disp
 sendEmailBtn.addEventListener('click',()=>{const body=document.getElementById('emailBody').value;if(!body.trim()){alert('Please write something before sending.');return;}
 const mailto=`mailto:naveenjaiswal@gmail.com?subject=AI%20Certification%20Query&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
 
-// ========== AI NEWS SIDEBAR ==========
-const toggleBtn=document.getElementById('newsToggle');const sidebar=document.getElementById('newsSidebar');
+// ========== AI NEWS SIDEBAR (Multi-Feed RSS) ==========
+const toggleBtn=document.getElementById('newsToggle');
+const sidebar=document.getElementById('newsSidebar');
 toggleBtn.addEventListener('click',()=>{sidebar.classList.toggle('open');});
-async function loadNews(){const apiKey="102fe252929e498f87ad1ac2781f902e"; // Replace with your NewsAPI.org key
-const url=`https://newsapi.org/v2/everything?q=artificial+intelligence&sortBy=publishedAt&language=en&pageSize=8&apiKey=${apiKey}`;
-const list=document.getElementById("newsList");list.innerHTML="<li>Loading news...</li>";
-try{const res=await fetch(url);const data=await res.json();list.innerHTML="";
-data.articles.forEach(article=>{const li=document.createElement("li");li.style.marginBottom="12px";
-li.innerHTML=`<a href="${article.url}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">${article.title}</a><br><small style="color:#555;">${new Date(article.publishedAt).toLocaleDateString()}</small>`;
-list.appendChild(li);});}catch(e){list.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";}}
+
+async function loadNews() {
+  const feeds = [
+    "https://api.rss2json.com/v1/api.json?rss_url=https://ai.googleblog.com/feeds/posts/default",
+    "https://api.rss2json.com/v1/api.json?rss_url=https://www.technologyreview.com/feed/",
+    "https://api.rss2json.com/v1/api.json?rss_url=https://venturebeat.com/category/ai/feed/"
+  ];
+
+  const list=document.getElementById("newsList");
+  list.innerHTML="<li>Loading news...</li>";
+
+  try {
+    let allArticles = [];
+    for (let url of feeds) {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.items) {
+        allArticles = allArticles.concat(data.items.map(a => ({
+          title: a.title,
+          link: a.link,
+          date: new Date(a.pubDate)
+        })));
+      }
+    }
+
+    allArticles.sort((a,b)=>b.date - a.date);
+    list.innerHTML="";
+    allArticles.slice(0,10).forEach(article=>{
+      const li=document.createElement("li");
+      li.style.marginBottom="12px";
+      li.innerHTML=`<a href="${article.link}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">
+        ${article.title}</a><br><small style="color:#555;">${article.date.toLocaleDateString()}</small>`;
+      list.appendChild(li);
+    });
+  } catch (e) {
+    list.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";
+  }
+}
 loadNews();
 </script>
 </body>
