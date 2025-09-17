@@ -11,7 +11,6 @@
         h1 { font-size: 2.2em; color: #00ff00; }
         select, button { padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 1em; }
 
-        /* Updated Button Styles with Glassmorphism */
         .provider-buttons button, .nav-button {
             background: rgba(0, 255, 0, 0.1);
             backdrop-filter: blur(5px);
@@ -53,38 +52,33 @@
         }
         .sidebar.open { right: 0; }
 
-        /* Toggle Button Styles */
+        /* Toggle Button Styles - Corrected with hover effect */
         .toggle-button {
             position: fixed;
             right: 0;
-            top: 50%;
-            transform: translateY(-50%);
+            width: 30px; /* Small width */
+            padding: 12px 18px;
             background: rgba(0, 255, 0, 0.2);
             color: #00ff00;
-            padding: 12px 18px;
             border-radius: 5px 0 0 5px;
             cursor: pointer;
             z-index: 2001;
             font-weight: bold;
             transition: all 0.3s ease;
-            writing-mode: vertical-rl;
+            writing-mode: vertical-rl; /* Vertical text */
             text-orientation: upright;
             border: 1px solid #00ff00;
+            transform: translateY(-50%);
         }
         .toggle-button:hover {
             background: #00ff00;
             color: black;
+            width: 40px; /* Bigger size on hover */
+            box-shadow: 0 0 15px #00ff00;
         }
 
-        /* Adjust position for two tabs */
-        #newsToggle { top: 30%; animation: pulse 2s infinite; }
+        #newsToggle { top: 30%; }
         #forumToggle { top: 60%; }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 5px #00ff00; }
-            50% { box-shadow: 0 0 20px #66b2ff; }
-            100% { box-shadow: 0 0 5px #00ff00; }
-        }
 
         /* Sidebar content styles */
         .sidebar h2 { color: #00ff00; }
@@ -95,7 +89,7 @@
         .sidebar .reply { margin-left: 20px; border-left: 2px solid #00ff00; padding-left: 10px; }
         .sidebar input, .sidebar textarea { width: 100%; margin: 5px 0; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #00ff00; color: #00ff00; }
         .sidebar input::placeholder, .sidebar textarea::placeholder { color: #00ff00; opacity: 0.7; }
-        
+
         /* Table */
         table { width: 95%; margin: 20px auto; border-collapse: collapse; background: #111; color: #00ff00; }
         table th, table td { border: 1px solid #00ff00; padding: 10px; text-align: center; }
@@ -191,7 +185,7 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789LZEBRA   0123456789lzebra";
+        const chars="0123456789   LZEBRA   0123456789";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
@@ -201,20 +195,20 @@
         const forumSidebar = document.getElementById("forumSidebar");
         const forumToggle = document.getElementById("forumToggle");
 
+        // Function to close all sidebars
+        function closeAllSidebars() {
+            newsSidebar.classList.remove("open");
+            forumSidebar.classList.remove("open");
+        }
+
         newsToggle.addEventListener("click", () => {
-            newsSidebar.classList.toggle("open");
-            // Ensure the other sidebar closes when one opens
-            if (forumSidebar.classList.contains("open")) {
-                forumSidebar.classList.remove("open");
-            }
+            closeAllSidebars();
+            newsSidebar.classList.add("open");
         });
 
         forumToggle.addEventListener("click", () => {
-            forumSidebar.classList.toggle("open");
-            // Ensure the other sidebar closes when one opens
-            if (newsSidebar.classList.contains("open")) {
-                newsSidebar.classList.remove("open");
-            }
+            closeAllSidebars();
+            forumSidebar.classList.add("open");
         });
 
         /* News Loader (multi-feed RSS via rss2json) */
@@ -290,7 +284,7 @@
 
         closeBtn.onclick = function() { modal.style.display = "none"; };
         window.onclick = function(e) { if (e.target == modal) { modal.style.display = "none"; } };
-        
+
         /* Forum with Persistence */
         function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}
         function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}
@@ -300,4 +294,3 @@
     </script>
 </body>
 </html>
-
