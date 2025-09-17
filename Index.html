@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>LZebra — GenAI Career Navigator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#000;font-family:Inter,Arial,sans-serif;color:#0f172a;position:relative;}
+  canvas#matrix {position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:#000;}
+  header{background:rgba(255,255,255,0.85);padding:28px 18px 12px;border-bottom:1px solid #e6eef8;text-align:center;position:relative;z-index:1}
+  header img {height:60px;margin-bottom:10px;}
+  .container{max-width:1100px;margin:0 auto;padding:18px;position:relative;z-index:1}
+  h1{margin:0;font-size:28px;font-weight:700;color:#0f172a}
+  h2{margin-top:0;font-size:20px;color:#0f172a}
+  p.lead{margin:8px 0 18px;color:#374151;font-size:14px}
+  .controls,.card{background:rgba(255,255,255,0.85);padding:18px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.04);margin-top:18px}
+  select,input.search{padding:10px;border-radius:6px;border:1px solid #dbe6f7;background:#fff;min-width:180px}
+  .btn{background:#2b8cff;color:#fff;padding:10px 16px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+  .tiles{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .tile{background:#fff;padding:10px 14px;border-radius:8px;border:1px solid #eef6ff;font-size:13px}
+  .tablewrap{overflow:auto;max-height:420px;border-radius:8px;border:1px solid #edf5ff;margin-top:12px}
+  table{border-collapse:collapse;width:100%;min-width:900px}
+  th,td{padding:10px;text-align:left;border-bottom:1px solid #f3f7fb;font-size:13px}
+  th{background:#f6fbff;position:sticky;top:0}
+  footer{padding:22px 18px;text-align:center;color:#e5e7eb;font-size:13px;margin-top:32px;position:relative;z-index:1}
+  .reply-btn{font-size:12px;color:#2b8cff;background:none;border:none;cursor:pointer;margin-left:8px}
+  .reply-box{margin-top:6px}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<header>
+  <div class="container">
+    <img src="logo.jpg" alt="LZebra Logo">
+    <h1>Navigate Your GenAI Career Journey</h1>
+    <p class="lead">Discover personalized learning paths, certifications, and upskilling strategies tailored to your IT role in the GenAI era.</p>
+  </div>
+</header>
+<main class="container">
+  <section class="controls">
+    <label>Industry Function <select><option>Sales & Marketing</option><option>Engineering</option></select></label>
+    <label>Specific Role <select><option>Technical Sales</option><option>Developer</option></select></label>
+    <label>Experience Level <select><option>Beginner</option><option>Intermediate</option><option>Executive (10+ yrs)</option></select></label>
+    <button class="btn" id="getPath">Get My Learning Path</button>
+
+    <!-- Flowchart Container -->
+    <div id="flowchart" style="margin-top:24px;padding:18px;background:rgba(255,255,255,0.85);border-radius:10px;display:none">
+      <h2>Learning Path Flowchart</h2>
+      <svg id="flowSVG" width="100%" height="500"></svg>
+    </div>
+
+    <div class="tiles">
+      <div class="tile">Google Cloud & AI</div>
+      <div class="tile">Microsoft Azure</div>
+      <div class="tile">AWS Training</div>
+      <div class="tile">DeepLearning.AI</div>
+      <div class="tile">IBM & Oracle</div>
+      <div class="tile">MIT & Stanford</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Comprehensive Certification Coverage</h2>
+    <input class="search" id="q" placeholder="Search by vendor, exam code, or name">
+    <div class="tablewrap">
+      <table id="certTable">
+        <thead>
+          <tr><th>Vendor / Course</th><th>Exam Code</th><th>Level</th><th>Fee (USD)</th><th>Fee (INR)</th><th>Link</th><th>Notes</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <h2 style="margin-top:24px">Why these?</h2>
+    <p style="color:#6b7280;font-size:14px">We included vendor-backed certifications (Microsoft, AWS, Google), academic providers, and specialist programs (DeepLearning.AI). Exam codes and fees are approximate and region-dependent. Always check vendor links for the latest.</p>
+
+    <h2 style="margin-top:24px">Export / Share</h2>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn" id="copyBtn">Copy Filtered</button>
+      <button class="btn" id="downloadBtn">Download CSV</button>
+    </div>
+
+    <h2 style="margin-top:24px">Discussion Forum</h2>
+    <div style="margin-top:12px">
+      <textarea id="forumInput" rows="3" style="width:100%;padding:10px;border:1px solid #dbe6f7;border-radius:8px" placeholder="Write your comment..."></textarea>
+      <button class="btn" style="margin-top:8px" id="postBtn">Post</button>
+      <button class="btn" style="margin-top:8px;background:#ef4444" id="clearBtn">Clear Forum</button>
+    </div>
+    <ul id="forumPosts" style="list-style:none;padding:0;margin-top:16px"></ul>
+
+    <h2 style="margin-top:24px">Send your Query</h2>
+    <a href="#" id="emailLink">Send your Query</a>
+    <div id="emailForm" style="margin-top:12px;display:none">
+      <p style="font-size:14px;color:#6b7280">Your query will be sent to: <strong>naveen.jaiswal@icloud.com</strong></p>
+      <textarea id="emailBody" rows="3" style="width:100%;padding:10px;border:1px solid #dbe6f7;border-radius:8px" placeholder="Write your email..."></textarea>
+      <button class="btn" style="margin-top:8px" id="sendEmailBtn">Send</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © 2025 LZebra — GenAI Navigator. All Rights Reserved.
+</footer>
+
+<script>
+// ---------------- Matrix Background ----------------
+const canvas=document.getElementById('matrix');
+const ctx=canvas.getContext('2d');
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+const letters="LZebraaaaLZEBRAaaa01234566789LZebra0123456789LZebra";
+const fontSize=14;
+const columns=canvas.width/fontSize;
+const drops=[];
+for(let x=0;x<columns;x++) drops[x]=1;
+function draw(){
+  ctx.fillStyle="rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#0F0";
+  ctx.font=fontSize+"px monospace";
+  for(let i=0;i<drops.length;i++){
+    const text=letters.charAt(Math.floor(Math.random()*letters.length));
+    ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+    if(drops[i]*fontSize>canvas.height && Math.random()>0.975) drops[i]=0;
+    drops[i]++;
+  }
+}
+setInterval(draw,33);
+window.addEventListener('resize',()=>{canvas.height=window.innerHeight;canvas.width=window.innerWidth;});
+
+// ---------------- Certification Data ----------------
+const certifications = [
+  {vendor:"Microsoft",name:"Azure AI Fundamentals",code:"AI-900",level:"Beginner",fee_usd:"$99",fee_inr:"₹3696",link:"https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/",notes:"Free Microsoft Learn modules available"},
+  {vendor:"AWS",name:"AWS Certified AI Practitioner",code:"AIF-C01",level:"Foundational",fee_usd:"$100",fee_inr:"₹8400",link:"https://aws.amazon.com/certification/certified-ai-practitioner/",notes:"AWS free digital training included"},
+  {vendor:"Google Cloud",name:"Professional Machine Learning Engineer",code:"PML-E",level:"Intermediate",fee_usd:"$200",fee_inr:"₹16500",link:"https://cloud.google.com/learn/certification/machine-learning-engineer",notes:"Advanced ML role-based exam"},
+  {vendor:"DeepLearning.AI / Coursera",name:"Generative AI Specialization",code:"N/A",level:"Beginner → Intermediate",fee_usd:"≈$39/month",fee_inr:"≈₹3200/month",link:"https://www.coursera.org/specializations/generative-ai",notes:"Can audit free; cert requires subscription"},
+  {vendor:"IBM / Coursera",name:"AI Engineering Professional Certificate",code:"N/A",level:"Intermediate",fee_usd:"≈$39/month",fee_inr:"≈₹3200/month",link:"https://www.ibm.com/training",notes:"Includes ML, DL, AI projects"},
+  {vendor:"Google AI",name:"AI Fundamentals (Learn AI Skills)",code:"N/A",level:"Beginner",fee_usd:"Free",fee_inr:"Free",link:"https://ai.google/education/",notes:"Free courses and tutorials"},
+  {vendor:"Coursera",name:"AI For Everyone (Andrew Ng)",code:"N/A",level:"Beginner",fee_usd:"Free audit / $49 cert",fee_inr:"Free audit / ₹4000 cert",link:"https://www.coursera.org/learn/ai-for-everyone",notes:"Non-technical overview"},
+  {vendor:"MIT xPro",name:"Professional Certificate in AI",code:"N/A",level:"Intermediate",fee_usd:"≈$2500+",fee_inr:"≈₹200,000+",link:"https://xpro.mit.edu",notes:"Professional level program"}
+];
+function render(certs){
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  for(const c of certs){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${c.vendor} — ${c.name}</td>
+      <td>${c.code}</td>
+      <td>${c.level}</td>
+      <td>${c.fee_usd}</td>
+      <td>${c.fee_inr}</td>
+      <td><a href="${c.link}" target="_blank">Open</a></td>
+      <td>${c.notes}</td>`;
+    tbody.appendChild(tr);
+  }
+}
+window.onload = () => { render(certifications); };
+
+// ---------------- Flowchart ----------------
+document.getElementById('getPath').addEventListener('click',()=>{
+  const industry = document.querySelectorAll('.controls select')[0].value;
+  const role = document.querySelectorAll('.controls select')[1].value;
+  const level = document.querySelectorAll('.controls select')[2].value;
+  
+  const svg = document.getElementById('flowSVG');
+  svg.innerHTML='';
+  const boxWidth=200, boxHeight=50, startX=50, startY=50, gapX=220, gapY=80;
+
+  function getColor(level){
+    if(level.includes("Beginner")) return "#16a34a"; // green
+    if(level.includes("Intermediate")) return "#f97316"; // orange
+    if(level.includes("Executive")) return "#dc2626"; // red
+    return "#2b8cff";
+  }
+
+  function drawBox(text,x,y,color){
+    const rect=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    rect.setAttribute("x",x);rect.setAttribute("y",y);
+    rect.setAttribute("width",boxWidth);rect.setAttribute("height",boxHeight);
+    rect.setAttribute("rx",10);
+    rect.setAttribute("fill",color);rect.setAttribute("stroke","#0f172a");
+    rect.setAttribute("stroke-width",2);
+    svg.appendChild(rect);
+
+    const label=document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute("x",x+boxWidth/2);
+    label.setAttribute("y",y+boxHeight/2+5);
+    label.setAttribute("fill","white");
+    label.setAttribute("text-anchor","middle");
+    label.setAttribute("font-size","14");
+    label.textContent=text;
+    svg.appendChild(label);
+    return {x,y};
+  }
+  function drawArrow(fromX,fromY,toX,toY){
+    const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute("x1",fromX);line.setAttribute("y1",fromY);
+    line.setAttribute("x2",toX);line.setAttribute("y2",toY);
+    line.setAttribute("stroke","#333");line.setAttribute("stroke-width",2);
+    svg.appendChild(line);
+  }
+
+  const start=drawBox("Start",startX,startY,"#2b8cff");
+  const industryBox=drawBox(industry,startX+gapX,startY,"#2b8cff");
+  drawArrow(startX+boxWidth,startY+boxHeight/2,startX+gapX,startY+boxHeight/2);
+
+  const roleBox=drawBox(role,startX+gapX*2,startY,"#2b8cff");
+  drawArrow(startX+gapX+boxWidth,startY+boxHeight/2,startX+gapX*2,startY+boxHeight/2);
+
+  const levelBox=drawBox(level,startX+gapX*3,startY,getColor(level));
+  drawArrow(startX+gapX*2+boxWidth,startY+boxHeight/2,startX+gapX*3,startY+boxHeight/2);
+
+  let certs=certifications.filter(c=>c.level.includes(level) || c.level.includes("Beginner"));
+  certs=certs.slice(0,3);
+  certs.forEach((c,i)=>{
+    const y=startY+gapY+(i*(boxHeight+gapY/2));
+    const x=startX+gapX*3;
+    drawBox(c.code+" ("+c.vendor+")",x,y,getColor(c.level));
+    drawArrow(x+boxWidth/2,startY+boxHeight,x+boxWidth/2,y);
+  });
+
+  document.getElementById('flowchart').style.display='block';
+});
+
+// ---------------- Forum Persistence ----------------
+const forumInput=document.getElementById('forumInput');
+const postBtn=document.getElementById('postBtn');
+const clearBtn=document.getElementById('clearBtn');
+const forumPosts=document.getElementById('forumPosts');
+function savePosts(){localStorage.setItem('forumPosts',forumPosts.innerHTML);}
+function loadPosts(){const saved=localStorage.getItem('forumPosts');if(saved){forumPosts.innerHTML=saved;attachReplyEvents();}}
+function attachReplyEvents(){
+  forumPosts.querySelectorAll('.reply-btn').forEach(btn=>{
+    btn.onclick=()=>{const box=btn.nextElementSibling;box.style.display=box.style.display==='none'?'block':'none';};
+  });
+  forumPosts.querySelectorAll('.reply-box .btn').forEach(btn=>{
+    btn.onclick=()=>{const textarea=btn.parentElement.querySelector('textarea');const replies=btn.parentElement.parentElement.querySelector('.replies');if(textarea.value.trim()){const li=document.createElement('li');li.textContent=textarea.value.trim();li.style.padding="6px 0";replies.appendChild(li);textarea.value='';btn.parentElement.style.display='none';savePosts();}};});
+}
+postBtn.addEventListener('click',()=>{
+  const txt=forumInput.value.trim();
+  if(!txt)return;
+  const li=document.createElement('li');
+  li.style.borderBottom="1px solid #e5e7eb";
+  li.style.padding="8px 0";
+  li.innerHTML = `<div>${txt}</div><button class="reply-btn">Reply</button><div class="reply-box" style="display:none"><textarea rows="2" style="width:100%;padding:6px;border:1px solid #ccc;border-radius:6px" placeholder="Write reply..."></textarea><button class="btn" style="margin-top:6px">Post Reply</button></div><ul class="replies" style="list-style:none;padding-left:18px;margin-top:6px"></ul>`;
+  forumPosts.prepend(li);
+  forumInput.value='';
+  attachReplyEvents();
+  savePosts();
+});
+clearBtn.addEventListener('click',()=>{
+  if(confirm("Clear all forum posts?")){
+    forumPosts.innerHTML='';
+    localStorage.removeItem('forumPosts');
+  }
+});
+loadPosts();
+
+// ---------------- Email Query ----------------
+const emailLink=document.getElementById('emailLink');
+const emailForm=document.getElementById('emailForm');
+const sendEmailBtn=document.getElementById('sendEmailBtn');
+emailLink.addEventListener('click',(e)=>{e.preventDefault();emailForm.style.display=emailForm.style.display==='none'?'block':'none';});
+sendEmailBtn.addEventListener('click',()=>{const body=document.getElementById('emailBody').value;if(!body.trim()){alert('Please write something before sending.');return;}const mailto=`mailto:naveenjaiswal@gmail.com?subject=AI%20Certification%20Query&body=${encodeURIComponent(body)}`;window.location.href=mailto;});
+</script>
+</body>
+</html>
