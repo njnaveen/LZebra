@@ -36,12 +36,12 @@
         .sidebar {
             position: fixed;
             top: 0;
-            right: -100%; /* Initially hide the sidebar completely */
+            right: -100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
             color: #00ff00;
             box-shadow: -2px 0 10px rgba(0, 0, 0, 0.6);
-            transition: right 0.4s ease, width 0.4s ease; /* Add transition for width */
+            transition: right 0.4s ease, width 0.4s ease;
             padding: 20px;
             z-index: 2000;
             overflow-y: auto;
@@ -50,12 +50,14 @@
             border-left: 1px solid rgba(0, 255, 0, 0.3);
         }
         .sidebar.open { right: 0; }
+        .sidebar.large { width: 70%; }
+        .sidebar.small { width: 350px; }
 
-        /* Toggle Button Styles - Corrected with hover effect */
+        /* Toggle Button Styles */
         .toggle-button {
             position: fixed;
             right: 0;
-            padding: 12px; /* Uniform padding */
+            padding: 12px;
             background: rgba(0, 255, 0, 0.2);
             color: #00ff00;
             border-radius: 5px 0 0 5px;
@@ -64,17 +66,17 @@
             font-weight: bold;
             transition: all 0.3s ease;
             writing-mode: vertical-rl;
-            text-orientation: sideways; /* Use sideways for better readability on vertical text */
+            text-orientation: sideways;
             border: 1px solid #00ff00;
             transform: translateY(-50%);
-            white-space: nowrap; /* Prevent text from wrapping */
+            white-space: nowrap;
         }
         .toggle-button:hover {
             background: #00ff00;
             color: black;
             padding-left: 20px;
             box-shadow: 0 0 15px #00ff00;
-            transform: translateY(-50%) translateX(-5px); /* Add a slight shift for a "pop" effect */
+            transform: translateY(-50%) translateX(-5px);
         }
 
         #newsToggle { top: 30%; }
@@ -152,10 +154,10 @@
         <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹2000000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
     </table>
 
-    <div id="newsSidebar" class="sidebar"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
+    <div id="newsSidebar" class="sidebar small"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
     <div id="newsToggle" class="toggle-button">AI News</div>
 
-    <div id="forumSidebar" class="sidebar">
+    <div id="forumSidebar" class="sidebar large">
         <h2>Discussion Forum</h2>
         <input type="text" id="postText" placeholder="Write your post..." />
         <button onclick="addPost()">Post</button>
@@ -195,25 +197,26 @@
         const forumSidebar = document.getElementById("forumSidebar");
         const forumToggle = document.getElementById("forumToggle");
 
-        function openSidebar(sidebar, width) {
-            newsSidebar.style.width = "0%";
-            forumSidebar.style.width = "0%";
-            sidebar.style.width = width;
+        function closeAllSidebars() {
+            newsSidebar.classList.remove("open");
+            forumSidebar.classList.remove("open");
         }
 
         newsToggle.addEventListener("click", () => {
-            if (newsSidebar.style.width === "70%") {
-                openSidebar(newsSidebar, "0%");
+            if (newsSidebar.classList.contains("open")) {
+                newsSidebar.classList.remove("open");
             } else {
-                openSidebar(newsSidebar, "70%");
+                closeAllSidebars();
+                newsSidebar.classList.add("open");
             }
         });
 
         forumToggle.addEventListener("click", () => {
-            if (forumSidebar.style.width === "70%") {
-                openSidebar(forumSidebar, "0%");
+            if (forumSidebar.classList.contains("open")) {
+                forumSidebar.classList.remove("open");
             } else {
-                openSidebar(forumSidebar, "70%");
+                closeAllSidebars();
+                forumSidebar.classList.add("open");
             }
         });
 
