@@ -10,7 +10,7 @@
         header img { max-height: 80px; margin-top: 10px; }
         h1 { font-size: 2.2em; color: #00ff00; }
         select, button { padding: 10px; margin: 5px; border: none; border-radius: 5px; font-size: 1em; }
-        
+
         /* Updated Button Styles with Glassmorphism */
         .provider-buttons button {
             background: rgba(0, 255, 0, 0.1); /* Semi-transparent green */
@@ -30,7 +30,7 @@
             transform: scale(1.05); /* Slight grow effect on hover */
             box-shadow: 0 0 15px #00ff00;
         }
-        
+
         footer { margin-top: 40px; font-size: 0.9em; color: #00ff00; }
 
         /* Sidebar */
@@ -79,9 +79,24 @@
     </header>
 
     <div>
-        <select id="industry"><option>Engineering</option><option>Sales & Marketing</option></select>
-        <select id="role"><option>Developer</option><option>Technical Sales</option></select>
-        <select id="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+        <select id="industry">
+            <option>IT & Software</option>
+            <option>Sales & Marketing</option>
+            <option>Healthcare</option>
+            <option>Finance</option>
+        </select>
+        <select id="role">
+            <option>Developer</option>
+            <option>Data Scientist</option>
+            <option>Technical Sales</option>
+            <option>Product Manager</option>
+            <option>Researcher</option>
+        </select>
+        <select id="level">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option>Advanced</option>
+        </select>
         <button id="getPath">Get My Learning Path</button>
     </div>
 
@@ -134,8 +149,97 @@
     <footer><p>© 2025 LZebra – GenAI Navigator. All Rights Reserved.</p></footer>
 
     <script>
-        /* All scripts below are unchanged */
-        const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");canvas.height=window.innerHeight;canvas.width=window.innerWidth;const chars="LZEBRA0123456789   LZebra0123456789";const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);const toggleBtn=document.getElementById("newsToggle"),sidebar=document.getElementById("newsSidebar"),newsList=document.getElementById("newsList");toggleBtn.addEventListener("click",()=>sidebar.classList.toggle("open"));async function loadNews(){const feeds=["https://api.rss2json.com/v1/api.json?rss_url=https://ai.googleblog.com/feeds/posts/default","https://api.rss2json.com/v1/api.json?rss_url=https://www.technologyreview.com/feed/","https://api.rss2json.com/v1/api.json?rss_url=https://venturebeat.com/category/ai/feed/"];newsList.innerHTML="<li>Loading news...</li>";try{let allArticles=[];for(let url of feeds){const res=await fetch(url);const data=await res.json();if(data.items){allArticles=allArticles.concat(data.items.map(a=>({title:a.title,link:a.link,date:new Date(a.pubDate)})));}}allArticles.sort((a,b)=>b.date-a.date);newsList.innerHTML="";allArticles.slice(0,10).forEach(article=>{const li=document.createElement("li");li.style.marginBottom="12px";li.innerHTML=`<a href="${article.link}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">${article.title}</a><br><small style="color:#555;">${article.date.toLocaleDateString()}</small>`;newsList.appendChild(li);});}catch(e){newsList.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";}}loadNews();const modal=document.getElementById("pathModal"),closeBtn=document.querySelector(".close");document.getElementById("getPath").onclick=function(){const ind=document.getElementById("industry").value,role=document.getElementById("role").value,lvl=document.getElementById("level").value;document.getElementById("pathDetails").innerText=`Your path: ${ind} → ${role} → ${lvl}`;modal.style.display="flex";};closeBtn.onclick=function(){modal.style.display="none";};window.onclick=function(e){if(e.target==modal){modal.style.display="none";}};function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}function addPost(){const text=document.getElementById("postText").value;if(!text) return;const div=document.createElement("div");div.className="post";div.innerHTML=`<p>${text}</p><button onclick="addReply(this)">Reply</button><div class="replies"></div>`;document.getElementById("posts").appendChild(div);document.getElementById("postText").value="";savePosts();}function addReply(btn){const replyText=prompt("Enter your reply:");if(!replyText) return;const reply=document.createElement("div");reply.className="reply";reply.innerHTML=`<p>${replyText}</p>`;btn.parentElement.querySelector(".replies").appendChild(reply);savePosts();}loadPosts();
+        /* Matrix */
+        const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
+        canvas.height=window.innerHeight;canvas.width=window.innerWidth;
+        const chars="0123456789LZebra0123456789lzebra0123456789";
+        const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
+        function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
+
+        /* Sidebar */
+        const toggleBtn=document.getElementById("newsToggle"),sidebar=document.getElementById("newsSidebar"),newsList=document.getElementById("newsList");
+        toggleBtn.addEventListener("click",()=>sidebar.classList.toggle("open"));
+
+        /* News Loader (multi-feed RSS via rss2json) */
+        async function loadNews() {
+            const feeds = [
+                "https://api.rss2json.com/v1/api.json?rss_url=https://ai.googleblog.com/feeds/posts/default",
+                "https://api.rss2json.com/v1/api.json?rss_url=https://www.technologyreview.com/feed/",
+                "https://api.rss2json.com/v1/api.json?rss_url=https://venturebeat.com/category/ai/feed/"
+            ];
+            newsList.innerHTML="<li>Loading news...</li>";
+            try {
+                let allArticles = [];
+                for (let url of feeds) {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    if (data.items) {
+                        allArticles = allArticles.concat(data.items.map(a => ({
+                            title: a.title, link: a.link, date: new Date(a.pubDate)
+                        })));
+                    }
+                }
+                allArticles.sort((a,b)=>b.date - a.date);
+                newsList.innerHTML="";
+                allArticles.slice(0,10).forEach(article=>{
+                    const li=document.createElement("li");
+                    li.style.marginBottom="12px";
+                    li.innerHTML=`<a href="${article.link}" target="_blank" style="text-decoration:none; color:#2b8cff; font-weight:600;">
+                        ${article.title}</a><br><small style="color:#555;">${article.date.toLocaleDateString()}</small>`;
+                    newsList.appendChild(li);
+                });
+            } catch (e) {
+                newsList.innerHTML="<li>⚠️ Unable to load news. Try again later.</li>";
+            }
+        }
+        loadNews();
+
+        /* Modal - Corrected and Enhanced Learning Path Logic */
+        const modal=document.getElementById("pathModal"),closeBtn=document.querySelector(".close");
+        const pathDetailsElement = document.getElementById("pathDetails");
+        const getPathBtn = document.getElementById("getPath");
+
+        // Define your learning path recommendations
+        const learningPaths = {
+            'IT & Software_Developer_Beginner': 'Foundational AI concepts: Start with DeepLearning.AI’s "AI for Everyone" and Microsoft’s "Azure AI Fundamentals (AI-900)" to build a solid base. Focus on Python basics and key ML libraries.',
+            'IT & Software_Developer_Intermediate': 'Intermediate AI development: Progress to Google Cloud’s "Professional Machine Learning Engineer" certification. Explore frameworks like TensorFlow or PyTorch. Dive into practical projects with a focus on GenAI APIs.',
+            'IT & Software_Developer_Advanced': 'Advanced GenAI development: Pursue the AWS "Machine Learning Specialty" certification. Focus on building and deploying large-scale GenAI models, fine-tuning LLMs, and MLOps practices. Consider specialized courses from MIT or Stanford.',
+            'IT & Software_Data Scientist_Beginner': 'Foundational data science for AI: Begin with IBM’s "AI Engineering" professional certificate. Learn about data collection, cleaning, and basic model training. Understand the role of data in GenAI development.',
+            'IT & Software_Data Scientist_Intermediate': 'Intermediate data science for AI: Advance to Google Cloud’s "Professional Data Engineer" path (not on your list, but a good fit). Focus on data pipelines, feature engineering for large models, and data governance in AI projects.',
+            'IT & Software_Data Scientist_Advanced': 'Advanced data science for AI: Specialize in AI research. Focus on cutting-edge topics like multimodal AI, reinforcement learning, and causality in AI. Pursue research-oriented programs like those from MIT or Stanford.',
+            'Sales & Marketing_Technical Sales_Beginner': 'Beginner technical sales for AI: Understand the business value of AI. Take DeepLearning.AI’s "AI for Everyone" to grasp concepts. Learn how to articulate AI benefits and overcome common customer objections.',
+            'Sales & Marketing_Technical Sales_Intermediate': 'Intermediate technical sales for AI: Master the core AI solutions from a specific provider (e.g., Azure AI, AWS AI/ML services). Learn to run basic demos and explain technical architectures to clients.',
+            'Sales & Marketing_Technical Sales_Advanced': 'Advanced technical sales for AI: Become a trusted advisor. Focus on strategic AI consulting, ROI analysis, and enterprise-level AI solution design. Network with senior leaders in the AI ecosystem.',
+            'Default': 'Select your industry, role, and level to get a personalized learning path.'
+        };
+
+        getPathBtn.onclick = function() {
+            const industry = document.getElementById("industry").value;
+            const role = document.getElementById("role").value;
+            const level = document.getElementById("level").value;
+
+            const key = `${industry}_${role}_${level}`;
+            const path = learningPaths[key] || learningPaths['Default'];
+
+            pathDetailsElement.innerHTML = `
+                <p><strong>Industry:</strong> ${industry}</p>
+                <p><strong>Role:</strong> ${role}</p>
+                <p><strong>Level:</strong> ${level}</p>
+                <hr style="border: 1px solid #00ff00; width: 50%; margin: 15px auto;">
+                <p>${path}</p>
+            `;
+            modal.style.display = "flex";
+        };
+
+        closeBtn.onclick = function() { modal.style.display = "none"; };
+        window.onclick = function(e) { if (e.target == modal) { modal.style.display = "none"; } };
+
+        /* Forum with Persistence */
+        function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}
+        function loadPosts(){const saved=localStorage.getItem("forumPosts");if(saved)document.getElementById("posts").innerHTML=saved;}
+        function addPost(){const text=document.getElementById("postText").value;if(!text) return;const div=document.createElement("div");div.className="post";div.innerHTML=`<p>${text}</p><button onclick="addReply(this)">Reply</button><div class="replies"></div>`;document.getElementById("posts").appendChild(div);document.getElementById("postText").value="";savePosts();}
+        function addReply(btn){const replyText=prompt("Enter your reply:");if(!replyText) return;const reply=document.createElement("div");reply.className="reply";reply.innerHTML=`<p>${replyText}</p>`;btn.parentElement.querySelector(".replies").appendChild(reply);savePosts();}
+        loadPosts();
     </script>
 </body>
 </html>
