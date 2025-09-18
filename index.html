@@ -13,9 +13,6 @@
     
       gtag('config', 'G-N2NNEBEJZM');
     </script>
-   <!-- This is AdSense-->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5897332480879690"
-     crossorigin="anonymous"></script>
     <style>
         body { margin: 0; font-family: Arial, sans-serif; background: black; color: #00ff00; text-align: center; overflow-x: hidden; }
         canvas#matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
@@ -40,6 +37,12 @@
             color: black;
             transform: scale(1.05);
             box-shadow: 0 0 15px #00ff00;
+        }
+        .main-nav-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         footer { 
@@ -105,10 +108,11 @@
             box-shadow: 0 0 15px #00ff00;
             transform: translateY(-50%) translateX(-5px);
         }
-
-        #newsToggle { top: 30%; }
+        
+        #newsToggle { top: 20%; }
+        #ideasToggle { top: 40%; }
         #forumToggle { top: 60%; }
-
+        
         /* Sidebar content styles */
         .sidebar h2 { color: #00ff00; }
         .sidebar ul, .sidebar p { color: #ccc; }
@@ -194,7 +198,7 @@
         <button onclick="window.open('https://www.ibm.com/training/','_blank')">IBM & Oracle</button>
         <button onclick="window.open('https://online.stanford.edu/','_blank')">MIT & Stanford</button>
     </div>
-
+    
     <h2>Comprehensive Certification Coverage</h2>
     <table>
         <tr><th>Vendor / Course</th><th>Exam Code</th><th>Level</th><th>Fee (USD)</th><th>Fee (INR)</th><th>Link</th><th>Notes</th></tr>
@@ -203,11 +207,38 @@
         <tr><td>Google Cloud — Professional ML Engineer</td><td>PML-E</td><td>Intermediate</td><td>$200</td><td>₹16000</td><td><a href="https://cloud.google.com/certification/machine-learning-engineer" target="_blank">Open</a></td><td>Professional</td></tr>
         <tr><td>DeepLearning.AI — AI for Everyone</td><td>DL-AI</td><td>Beginner</td><td>Free</td><td>Free</td><td><a href="https://www.coursera.org/learn/ai-for-everyone" target="_blank">Open</a></td><td>Non-technical</td></tr>
         <tr><td>IBM — AI Engineering</td><td>IBM-AIE</td><td>Intermediate</td><td>$399</td><td>₹33000</td><td><a href="https://www.coursera.org/professional-certificates/ai-engineer" target="_blank">Open</a></td><td>Professional Cert</td></tr>
-        <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹2000000+</td><td><a href="https://executive-ed.xpro.mit.edu/artificial-intelligence" target="_blank">Open</a></td><td>Executive</td></tr>
+        <tr><td>MIT & Stanford — AI Programs</td><td>MIT-STF-AI</td><td>Advanced</td><td>$2500+</td><td>₹2000000+</td><td><a href="https://online.stanford.edu/" target="_blank">Open</a></td><td>Executive</td></tr>
     </table>
 
     <div id="newsSidebar" class="sidebar small"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
     <div id="newsToggle" class="toggle-button">AI News</div>
+
+    <div id="ideasSidebar" class="sidebar small">
+        <h2>New AI Ideas</h2>
+        <ul>
+            <li>
+                <h2><a href="https://pieces.app/blog/9-best-ai-code-generation-tools?utm_source=chatgpt.com" target="_blank">Automated Code Generation & Debugging</a></h2>
+                <p>An AI that can write boilerplate code, suggest fixes for bugs, and optimize code performance automatically.</p>
+            </li>
+            <li>
+                <h2><a href="https://empathyfirstmedia.com/automating-customer-service-ai-chatbots/?utm_source=chatgpt.com" target="_blank">Intelligent Customer Service Bots</a></h2>
+                <p>Chatbots that use GenAI to understand complex user queries and resolve issues without human intervention, from booking to technical support.</p>
+            </li>
+            <li>
+                <h2><a href="https://www.rapidinnovation.io/post/top-7-smart-contract-audit-tools?utm_source=chatgpt.com" target="_blank">Smart Contract Auditing Automation</a></h2>
+                <p>An AI tool that automatically scans smart contract code for security vulnerabilities, logical errors, and potential exploits.</p>
+            </li>
+            <li>
+                <h2><a href="https://www.flowforma.com/blog/ai-workflow-automation-tools?utm_source=chatgpt.com" target="_blank">Personalized Marketing Automation</a></h2>
+                <p>A system that analyzes customer behavior to automatically generate personalized email campaigns, ad copy, and product recommendations.</p>
+            </li>
+            <li>
+                <h3><a href="https://www.flowforma.com/blog/ai-workflow-automation-tools?utm_source=chatgpt.com" target="_blank">Supply Chain Optimization</a></h2>
+                <p>AI that predicts supply chain disruptions, optimizes logistics routes, and automates inventory management in real-time.</p>
+            </li>
+        </ul>
+    </div>
+    <div id="ideasToggle" class="toggle-button" style="top: 40%;">AI Ideas</div>
 
     <div id="forumSidebar" class="sidebar large">
         <h2>Discussion Forum</h2>
@@ -215,7 +246,7 @@
         <button onclick="addPost()">Post</button>
         <div id="posts"></div>
     </div>
-    <div id="forumToggle" class="toggle-button">Discussion Forum</div>
+    <div id="forumToggle" class="toggle-button" style="top: 60%;">Discussion Forum</div>
 
     <div id="pathModal" class="modal">
         <div class="modal-content">
@@ -242,18 +273,21 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789 LZebra  ";
+        const chars="0123456789   LZebra  ";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
         /* Sidebar Toggle Logic */
         const newsSidebar = document.getElementById("newsSidebar");
         const newsToggle = document.getElementById("newsToggle");
+        const ideasSidebar = document.getElementById("ideasSidebar");
+        const ideasToggle = document.getElementById("ideasToggle");
         const forumSidebar = document.getElementById("forumSidebar");
         const forumToggle = document.getElementById("forumToggle");
 
         function closeAllSidebars() {
             newsSidebar.classList.remove("open");
+            ideasSidebar.classList.remove("open");
             forumSidebar.classList.remove("open");
         }
 
@@ -263,6 +297,15 @@
             } else {
                 closeAllSidebars();
                 newsSidebar.classList.add("open");
+            }
+        });
+
+        ideasToggle.addEventListener("click", () => {
+            if (ideasSidebar.classList.contains("open")) {
+                ideasSidebar.classList.remove("open");
+            } else {
+                closeAllSidebars();
+                ideasSidebar.classList.add("open");
             }
         });
 
@@ -278,9 +321,10 @@
         // Close sidebar on click outside
         document.addEventListener("click", (event) => {
             const isClickInsideNews = newsSidebar.contains(event.target) || newsToggle.contains(event.target);
+            const isClickInsideIdeas = ideasSidebar.contains(event.target) || ideasToggle.contains(event.target);
             const isClickInsideForum = forumSidebar.contains(event.target) || forumToggle.contains(event.target);
 
-            if (!isClickInsideNews && !isClickInsideForum) {
+            if (!isClickInsideNews && !isClickInsideIdeas && !isClickInsideForum) {
                 closeAllSidebars();
             }
         });
@@ -368,9 +412,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
