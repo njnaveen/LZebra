@@ -61,6 +61,24 @@
         footer a:hover {
             color: #2b8cff;
         }
+        
+        /* New top navigation bar styles */
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        .top-nav .nav-button {
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin: 5px 10px;
+            font-size: 0.9em;
+            text-decoration: none;
+            cursor: pointer;
+        }
 
         /* Sidebar Styles */
         .sidebar {
@@ -83,36 +101,6 @@
         .sidebar.large { width: 70%; }
         .sidebar.small { width: 350px; }
 
-        /* Toggle Button Styles */
-        .toggle-button {
-            position: fixed;
-            right: 0;
-            padding: 12px;
-            background: rgba(0, 255, 0, 0.2);
-            color: #00ff00;
-            border-radius: 5px 0 0 5px;
-            cursor: pointer;
-            z-index: 2001;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            writing-mode: vertical-rl;
-            text-orientation: sideways;
-            border: 1px solid #00ff00;
-            transform: translateY(-50%);
-            white-space: nowrap;
-        }
-        .toggle-button:hover {
-            background: #00ff00;
-            color: black;
-            padding-left: 20px;
-            box-shadow: 0 0 15px #00ff00;
-            transform: translateY(-50%) translateX(-5px);
-        }
-        
-        #newsToggle { top: 20%; }
-        #ideasToggle { top: 40%; }
-        #forumToggle { top: 60%; }
-        
         /* Sidebar content styles */
         .sidebar h2 { color: #00ff00; }
         .sidebar ul, .sidebar p { color: #ccc; }
@@ -162,6 +150,13 @@
 <body>
     <canvas id="matrix"></canvas>
 
+    <div class="top-nav">
+        <div id="newsToggle" class="nav-button">AI News</div>
+        <div id="ideasToggle" class="nav-button">AI Ideas</div>
+        <div id="forumToggle" class="nav-button">Discussion Forum</div>
+        <div id="contactUsBtn" class="nav-button">Contact Us</div>
+    </div>
+    
     <header>
         <img src="logo.jpg" alt="LZebra Logo" />
         <h1>Navigate Your GenAI Career Journey</h1>
@@ -211,34 +206,32 @@
     </table>
 
     <div id="newsSidebar" class="sidebar small"><h2>AI & Tech News</h2><ul id="newsList"><li>Loading news...</li></ul></div>
-    <div id="newsToggle" class="toggle-button">AI News</div>
 
     <div id="ideasSidebar" class="sidebar small">
         <h2>New AI Ideas</h2>
         <ul>
             <li>
-                <h2><a href="https://pieces.app/blog/9-best-ai-code-generation-tools?utm_source=chatgpt.com" target="_blank">Automated Code Generation & Debugging</a></h2>
+                <h2><a href="https://www.example.com/automated-coding" target="_blank">Automated Code Generation & Debugging</a></h2>
                 <p>An AI that can write boilerplate code, suggest fixes for bugs, and optimize code performance automatically.</p>
             </li>
             <li>
-                <h2><a href="https://empathyfirstmedia.com/automating-customer-service-ai-chatbots/?utm_source=chatgpt.com" target="_blank">Intelligent Customer Service Bots</a></h2>
+                <h2><a href="https://www.example.com/customer-service-bots" target="_blank">Intelligent Customer Service Bots</a></h2>
                 <p>Chatbots that use GenAI to understand complex user queries and resolve issues without human intervention, from booking to technical support.</p>
             </li>
             <li>
-                <h2><a href="https://www.rapidinnovation.io/post/top-7-smart-contract-audit-tools?utm_source=chatgpt.com" target="_blank">Smart Contract Auditing Automation</a></h2>
+                <h2><a href="https://www.example.com/smart-contract-audit" target="_blank">Smart Contract Auditing Automation</a></h2>
                 <p>An AI tool that automatically scans smart contract code for security vulnerabilities, logical errors, and potential exploits.</p>
             </li>
             <li>
-                <h2><a href="https://www.flowforma.com/blog/ai-workflow-automation-tools?utm_source=chatgpt.com" target="_blank">Personalized Marketing Automation</a></h2>
+                <h2><a href="https://www.example.com/marketing-automation-ai" target="_blank">Personalized Marketing Automation</a></h2>
                 <p>A system that analyzes customer behavior to automatically generate personalized email campaigns, ad copy, and product recommendations.</p>
             </li>
             <li>
-                <h3><a href="https://www.flowforma.com/blog/ai-workflow-automation-tools?utm_source=chatgpt.com" target="_blank">Supply Chain Optimization</a></h2>
+                <h2><a href="https://www.example.com/supply-chain-ai" target="_blank">Supply Chain Optimization</a></h2>
                 <p>AI that predicts supply chain disruptions, optimizes logistics routes, and automates inventory management in real-time.</p>
             </li>
         </ul>
     </div>
-    <div id="ideasToggle" class="toggle-button" style="top: 40%;">AI Ideas</div>
 
     <div id="forumSidebar" class="sidebar large">
         <h2>Discussion Forum</h2>
@@ -246,11 +239,19 @@
         <button onclick="addPost()">Post</button>
         <div id="posts"></div>
     </div>
-    <div id="forumToggle" class="toggle-button" style="top: 60%;">Discussion Forum</div>
+
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="contactModalClose">&times;</span>
+            <h2>Contact Us</h2>
+            <p>For inquiries, please contact:</p>
+            <p><strong><a href="mailto:naveen.jaiswal@lzebra.com" style="color:#00ff00; text-decoration: underline;">naveen.jaiswal@lzebra.com</a></strong></p>
+        </div>
+    </div>
 
     <div id="pathModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close" id="pathModalClose">&times;</span>
             <h2>Your Learning Path</h2>
             <svg width="100%" height="200">
                 <line x1="50" y1="50" x2="200" y2="50" stroke="#0f0" stroke-width="2" marker-end="url(#arrow)"/>
@@ -265,7 +266,7 @@
     </div>
 
     <footer>
-        <p>Contact Us: <a href="mailto:naveen.jaiswal@lzebra.com">naveen.jaiswal@lzebra.com</a></p>
+       <!-- <p>Contact Us: <a href="mailto:naveen.jaiswal@icloud.com">naveen.jaiswal@icloud.com</a></p>  -->
         <p>© 2025 LZebra – GenAI Navigator. All Rights Reserved.</p>
     </footer>
 
@@ -273,7 +274,7 @@
         /* Matrix */
         const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
         canvas.height=window.innerHeight;canvas.width=window.innerWidth;
-        const chars="0123456789   LZebra  ";
+        const chars="0123456789   LZebra   ";
         const fontSize=14,columns=canvas.width/fontSize,drops=Array(Math.floor(columns)).fill(1);
         function draw(){ctx.fillStyle="rgba(0,0,0,0.05)";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#0f0";ctx.font=fontSize+"px monospace";for(let i=0;i<drops.length;i++){const text=chars.charAt(Math.floor(Math.random()*chars.length));ctx.fillText(text,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>canvas.height&&Math.random()>0.975)drops[i]=0;drops[i]++;}}setInterval(draw,40);
 
@@ -365,7 +366,7 @@
         loadNews();
 
         /* Modal - Corrected and Enhanced Learning Path Logic */
-        const modal=document.getElementById("pathModal"),closeBtn=document.querySelector(".close");
+        const pathModal=document.getElementById("pathModal"),pathModalClose=document.getElementById("pathModalClose");
         const pathDetailsElement = document.getElementById("pathDetails");
         const getPathBtn = document.getElementById("getPath");
 
@@ -397,11 +398,28 @@
                 <hr style="border: 1px solid #00ff00; width: 50%; margin: 15px auto;">
                 <p>${path}</p>
             `;
-            modal.style.display = "flex";
+            pathModal.style.display = "flex";
         };
 
-        closeBtn.onclick = function() { modal.style.display = "none"; };
-        window.onclick = function(e) { if (e.target == modal) { modal.style.display = "none"; } };
+        pathModalClose.onclick = function() { pathModal.style.display = "none"; };
+        
+        /* Contact Us Modal Logic */
+        const contactModal = document.getElementById("contactModal");
+        const contactUsBtn = document.getElementById("contactUsBtn");
+        const contactModalClose = document.getElementById("contactModalClose");
+
+        contactUsBtn.onclick = function() {
+            contactModal.style.display = "flex";
+        }
+        contactModalClose.onclick = function() {
+            contactModal.style.display = "none";
+        }
+
+        /* Close modals on outside click */
+        window.onclick = function(e) { 
+            if (e.target == pathModal) { pathModal.style.display = "none"; }
+            if (e.target == contactModal) { contactModal.style.display = "none"; }
+        };
 
         /* Forum with Persistence */
         function savePosts(){localStorage.setItem("forumPosts",document.getElementById("posts").innerHTML);}
